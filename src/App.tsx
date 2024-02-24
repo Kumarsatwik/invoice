@@ -1,7 +1,7 @@
 // App.tsx
 
-import  { useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
@@ -12,11 +12,11 @@ function App() {
   const { isLogin } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLogin) {
-      navigate("/login");
-    }
-  }, [isLogin, navigate]);
+  // useEffect(() => {
+  //   if (!isLogin) {
+  //     navigate("/login");
+  //   }
+  // }, [isLogin, navigate]);
 
   return (
     <div className="relative">
@@ -24,7 +24,10 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<AddProduct />} />
+        <Route
+          path="/"
+          element={isLogin ? <AddProduct /> : <Navigate to="/login" />}
+        />
       </Routes>
       <Toaster />
     </div>

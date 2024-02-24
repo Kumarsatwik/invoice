@@ -1,10 +1,22 @@
 import { useState } from "react";
-import { useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { addLogout } from "../store/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 // import { generateInvoiceTemplate } from "../constant/template";
-
+interface SubmitResponse {
+  error?: string;
+  message?: string;
+  token?: string;
+}
 const useGenerateInvoice = () => {
   const products = useAppSelector((state) => state.products);
+  const { token } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const generateInvoice = async () => {
     setLoading(true);
@@ -110,8 +122,48 @@ const useGenerateInvoice = () => {
       </body>
     </html>
   `;
-    console.log(template);
-    setLoading(false);
+    const serverUrl = import.meta.env.VITE_SERVER_URL;
+
+    axios
+      .post<Blob>(
+        `${serverUrl}/generate-pdf`,
+        {
+          template,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        }
+      )
+      .then((res) => {
+        setLoading(false);
+        toast.success("Login Successfully");
+        const url = window.URL.createObjectURL(res);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "invoice.pdf";
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          dispatch(addLogout());
+          toast.error(err.response.statusText);
+          window.location.href = "/login";
+        }
+        console.log(err.response.status);
+        toast.error(err.response.data);
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   return { generateInvoice, loading };
 };

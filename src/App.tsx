@@ -1,6 +1,6 @@
 // App.tsx
 
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/login/Login";
@@ -9,10 +9,8 @@ import { useAppSelector } from "./store/store";
 import AddProduct from "./pages/addProduct/AddProduct";
 
 function App() {
-  const { isLogin, token } = useAppSelector((state) => state.auth); // Use useSelector
+  const { isLogin } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
-
-  console.log(isLogin, token);
 
   useEffect(() => {
     if (!isLogin) {

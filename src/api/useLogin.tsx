@@ -15,6 +15,7 @@ const useLogin = () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<LoginResponse | null>(null);
+  console.log(data);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const useLogin = () => {
         password,
       })
       .then((res) => {
-        console.log(res);
         setData(res.data);
         setLoading(false);
         toast.success("Login Successfully");

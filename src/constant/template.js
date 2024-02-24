@@ -1,26 +1,18 @@
-import { useState } from "react";
-import { useAppSelector } from "../store/store";
 
-// import { generateInvoiceTemplate } from "../constant/template";
-
-const useGenerateInvoice = () => {
-  const products = useAppSelector((state) => state.products);
-  const [loading, setLoading] = useState(false);
-  const generateInvoice = async () => {
-    setLoading(true);
-    const productListHTML = products.products
-      .map(
-        (product) => `
+export const generateInvoiceTemplate = (products) => {
+  const productListHTML = products
+    .map(
+      (product) => `
       <tr>
         <td>${product.name}</td>
         <td>${product.quantity}</td>
         <td>${product.rate}</td>
         <td>${product.quantity * product.rate}</td>
       </tr>`
-      )
-      .join("");
+    )
+    .join("");
 
-    const template = `
+  const template = `
     <html>
       <head>
         <title>Invoice</title>
@@ -110,10 +102,6 @@ const useGenerateInvoice = () => {
       </body>
     </html>
   `;
-    console.log(template);
-    setLoading(false);
-  };
-  return { generateInvoice, loading };
-};
 
-export default useGenerateInvoice;
+  return template;
+};

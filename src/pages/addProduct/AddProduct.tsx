@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AddProductForm from "../../components/addProductForm/AddProductForm";
 import { RootState, useAppDispatch, useAppSelector } from "../../store/store";
 import { addProduct as addProductAction } from "../../store/products/productSlice";
+import useGenerateInvoice from "../../api/useGenerateInvoice";
 
 const AddProduct: React.FC = () => {
   const [productName, setProductName] = useState("");
@@ -12,14 +13,12 @@ const AddProduct: React.FC = () => {
   const products = useAppSelector((state: RootState) => state.products);
   const dispatch = useAppDispatch();
 
-  console.log(products);
+  const { loading, generateInvoice } = useGenerateInvoice();
 
   const addProduct = () => {
     const calculatedGst = calculateGST(calculateProductTotal(quantity, rate));
     const calculatedTotal =
       calculateProductTotal(quantity, rate) + calculatedGst;
-
-    console.log(calculatedGst, calculatedTotal);
 
     dispatch(
       addProductAction({
@@ -43,8 +42,8 @@ const AddProduct: React.FC = () => {
     return Number(gst.toFixed(2)); // Assuming GST rate is 18%
   };
 
-  const redirectToInvoicePage = () => {
-    // Redirect to the invoice generation page
+  const redirectToInvoicePage = async () => {
+    generateInvoice();
   };
 
   return (
@@ -64,7 +63,7 @@ const AddProduct: React.FC = () => {
             onClick={redirectToInvoicePage}
           >
             {" "}
-            Generate Invoice
+            {loading ? "loading..." : "Generate Invoice"}
           </button>
         </div>
       </div>

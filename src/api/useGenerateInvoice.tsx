@@ -3,19 +3,13 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { addLogout } from "../store/auth/authSlice";
-import { useNavigate } from "react-router-dom";
 
 // import { generateInvoiceTemplate } from "../constant/template";
-interface SubmitResponse {
-  error?: string;
-  message?: string;
-  token?: string;
-}
+
 const useGenerateInvoice = () => {
   const products = useAppSelector((state) => state.products);
   const { token } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const generateInvoice = async () => {
@@ -139,8 +133,12 @@ const useGenerateInvoice = () => {
       )
       .then((res) => {
         setLoading(false);
-        toast.success("Login Successfully");
-        const url = window.URL.createObjectURL(res);
+        toast.success("PDF generated successfully");
+
+        // Create object URL for the Blob data
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+
+        // Create a link element to trigger download
         const a = document.createElement("a");
         a.href = url;
         a.download = "invoice.pdf";

@@ -26,6 +26,18 @@ const useGenerateInvoice = () => {
       )
       .join("");
 
+    const finalAmount = Number(
+      products.products.reduce((acc, product) => {
+        return acc + product.quantity * product.rate;
+      }, 0) * 0.18
+    ).toFixed(2);
+
+    const totalAmount = Number(
+      products.products.reduce((acc, product) => {
+        return acc + product.quantity * product.rate;
+      }, 0)
+    );
+
     const template = `
     <html>
       <head>
@@ -100,17 +112,17 @@ const useGenerateInvoice = () => {
         <div class="totalAmount">
           <table>
             <tr>
-              <td>hello</td>
-              <td>hello</td>
+              <td>Total Amount</td>
+              <td>${totalAmount}</td>
             </tr>
             <tr>
-              <td>hello1</td>
-              <td>hello1</td>
+              <td>GST</td>
+              <td>18%</td>
             </tr>
           </table>
           <div class="finalAmount">
-            <label>Total Amount</label>
-            <label>100000000000</label>
+            <label>Grand Total</label>
+            <label>${finalAmount}</label>
           </div>
         </div>
       </body>

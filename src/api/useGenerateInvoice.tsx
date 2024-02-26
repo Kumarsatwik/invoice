@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { addLogout } from "../store/auth/authSlice";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
 
 const useGenerateInvoice = () => {
   const products = useAppSelector((state) => state.products);
@@ -149,7 +149,7 @@ const useGenerateInvoice = () => {
 
         // Create object URL for the Blob data
         const url = window.URL.createObjectURL(new Blob([res.data]));
-        // saveAs(blob, `invoice.pdf`);
+        // saveAs(url, `invoice.pdf`);
 
         // // Create a link element to trigger download
         const a = document.createElement("a");

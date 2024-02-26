@@ -3,8 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { addLogout } from "../store/auth/authSlice";
-
-// import { generateInvoiceTemplate } from "../constant/template";
+import { saveAs } from "file-saver";
 
 const useGenerateInvoice = () => {
   const products = useAppSelector((state) => state.products);
@@ -146,11 +145,13 @@ const useGenerateInvoice = () => {
       .then((res) => {
         setLoading(false);
         toast.success("PDF generated successfully");
+        // const blob = res.blob();
 
         // Create object URL for the Blob data
         const url = window.URL.createObjectURL(new Blob([res.data]));
+        // saveAs(blob, `invoice.pdf`);
 
-        // Create a link element to trigger download
+        // // Create a link element to trigger download
         const a = document.createElement("a");
         a.href = url;
         a.download = "invoice.pdf";
@@ -162,12 +163,12 @@ const useGenerateInvoice = () => {
         document.body.removeChild(a);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
+        if (err.response.status >= 400) {
           dispatch(addLogout());
           toast.error(err.response.statusText);
           window.location.href = "/login";
         }
-        console.log(err.response.status);
+        // console.log(err.response.status);
         toast.error(err.response.data);
         setLoading(false);
       })
